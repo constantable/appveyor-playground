@@ -52,7 +52,7 @@ install:
     - IF %PHP%==0 echo extension=php_curl.dll >> php.ini
     - IF %PHP%==0 echo extension=php_pdo_mysql.dll >> php.ini
     - IF %PHP%==0 echo extension=php_pdo_sqlite.dll >> php.ini
-    - IF %PHP%==0 echo extension=php_mongodb.dll >> php.ini
+    - echo extension=php_mongodb.dll >> php.ini
     - appveyor-retry appveyor DownloadFile https://github.com/mongodb/mongo-php-driver/releases/download/1.15.0/php_mongodb-1.15.0-8.0-nts-x64.zip
     - 7z e -y -oext php_mongodb-1.15.0-8.0-nts-x64.zip
     - cat C:\mongodb\mongod.cfg
@@ -62,10 +62,7 @@ install:
     - rename composer-stable.phar composer.phar
     - cd C:\projects\maker-bundle
     - IF %dependencies%==highest appveyor-retry composer update --no-progress --no-suggest --ansi
-    - composer install --no-interaction --no-progress --ansi --no-scripts --working-dir=tools/twigcs
-    - composer install --no-interaction --no-progress --ansi --no-scripts --working-dir=tools/php-cs-fixer
-    - vendor/bin/simple-phpunit install
 
 test_script:
     - cd C:\projects\maker-bundle
-    - vendor/bin/simple-phpunit
+    - php bin/console doctrine:mongodb:fixtures:load --append
